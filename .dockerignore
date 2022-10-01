@@ -1,0 +1,14 @@
+run.bat
+.git
+.vscode
+.tox
+.mypy_cache
+__pycache__
+downloads
+tmp
+venv
+*.sqlite3
+*.conf
+*.session
+config
+config.ini
