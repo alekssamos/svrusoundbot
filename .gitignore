@@ -2,6 +2,7 @@ run.bat
 # Pyrogram  files
 config.ini
 *.session
+*.session-*
 downloads
 
 # Byte-compiled / optimized / DLL files

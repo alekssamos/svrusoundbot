@@ -10,5 +10,6 @@ venv
 *.sqlite3
 *.conf
 *.session
+*.session-*
 config
 config.ini

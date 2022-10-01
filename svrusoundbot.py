@@ -206,7 +206,6 @@ async def worker():
         except asyncio.TimeoutError as e:
             await message.reply("Слишком долго. Операция отменена.")
             logger.exception("timeout")
-            raise e
         except Exception:
             ei = sys.exc_info()
             logger.exception("error")
