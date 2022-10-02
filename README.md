@@ -46,7 +46,7 @@ on linux:
 ```bash
 venv/bin/python -m pip install -r requirements.txt
 ```
-#### org from docker container:
+#### or from docker container:
 ```bash
 docker pull ghcr.io/alekssamos/svrusoundbot:v1.0.2
 ```
