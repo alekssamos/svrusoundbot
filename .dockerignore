@@ -13,3 +13,4 @@ venv
 *.session-*
 config
 config.ini
+.env
