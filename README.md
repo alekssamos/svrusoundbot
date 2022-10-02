@@ -8,22 +8,42 @@ Available here: [@svrusoundbot](https://t.me/svrusoundbot).
 
 ## How to deploy on your server?
 
+There are already compiled executable independent files for [Windows x86](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot.exe) and [Linux x64](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot).
+
+Otherwise
 Python must be installed on your system.
+
 Tested on Python versions 3.8 - 3.11
 
-### Get the bot
+
+Launch via docker is also available
+
+### Get the bot source 
 #### from github:
 ```bash
 git clone https://github.com/alekssamos/svrusoundbot
 cd svrusoundbot
-# create python virtual enviroment
+
+```
+
+create a python virtual environment
+
+```bash
 python -m venv venv
 # or
 python3 -m venv venv
-# install dependencies
-# on windows:
+```
+
+install dependencies
+
+on windows:
+```bat
 venv\Scripts\python -m pip install -r requirements.txt
-# on linux:
+```
+
+on linux:
+
+```bash
 venv/bin/python -m pip install -r requirements.txt
 ```
 #### org from docker container:
@@ -36,12 +56,18 @@ docker pull ghcr.io/alekssamos/svrusoundbot:v1.0.2
 * rename `.env.example` to `.env` and edit by filling in the values
 ### Launch it
 #### Directly
-```bash
-# on windows:
+on windows:
+```bat
 venv\Scripts\python svrusoundbot.py
-# on linux:
+```
+on linux:
+
+```bash
 venv/bin/python svrusoundbot.py
 ```
 #### through docker
-`docker run ghcr.io/alekssamos/svrusoundbot:v1.0.2 --env-file .env`
+```bash
+docker run --env-file .env ghcr.io/alekssamos/svrusoundbot:v1.0.2
+```
+
 Everything is ready!
