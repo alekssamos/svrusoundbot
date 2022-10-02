@@ -28,7 +28,7 @@ venv/bin/python -m pip install -r requirements.txt
 ```
 #### org from docker container:
 ```bash
-docker pull ghcr.io/alekssamos/svrusoundbot:latest
+docker pull ghcr.io/alekssamos/svrusoundbot:v1.0.2
 ```
 ### Configuration
 * Get bot token from https://t.me/BotFather
@@ -43,5 +43,5 @@ venv\Scripts\python svrusoundbot.py
 venv/bin/python svrusoundbot.py
 ```
 #### through docker
-`docker run ghcr.io/alekssamos/svrusoundbot:latest --env-file .env`
+`docker run ghcr.io/alekssamos/svrusoundbot:v1.0.2 --env-file .env`
 Everything is ready!
