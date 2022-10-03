@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  dn: ghcr.io/${GITHUB_REPOSITORY}
+
 jobs:
   build:
 
@@ -28,3 +31,11 @@ jobs:
 
     - name: Code checks
       run: pre-commit run
+
+    - name: Build the Docker image
+      if: "startsWith(GITHUB_REF, 'refs/tags/v')"
+      run: |
+        tag_name="${GITHUB_REF#refs/tags/}"
+        set -eux
+        docker build . --file Dockerfile --tag ${env.dn}:${tag_name} 
+        docker tag ${env.dn}:latest
