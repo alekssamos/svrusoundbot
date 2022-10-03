@@ -10,6 +10,12 @@ Available here: [@svrusoundbot](https://t.me/svrusoundbot).
 
 There are already compiled executable independent files for [Windows x86](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot.exe) and [Linux x64](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot).
 
+If the file does not run on some Linux systems, do this before starting:
+```bash
+export TMPDIR=./tmp; mkdir -p  $TMPDIR
+```
+
+
 Otherwise
 Python must be installed on your system.
 
