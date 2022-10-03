@@ -37,5 +37,22 @@ jobs:
       run: |
         tag_name="${GITHUB_REF#refs/tags/}"
         set -eux
-        docker build . --file Dockerfile --tag ${env.dn}:${tag_name} 
+        docker build . --file Dockerfile --tag ${env.dn}:${tag_name}
         docker tag ${env.dn}:latest
+
+    - name: Login to GitHub Container Registry
+      if: "startsWith(GITHUB_REF, 'refs/tags/v')"
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.ghcr_token }}
+
+    - name: Publish the Docker image
+      if: "startsWith(GITHUB_REF, 'refs/tags/v')"
+      run: |
+        tag_name="${GITHUB_REF#refs/tags/}"
+        set -eux
+        docker push ${env.dn}:${tag_name}
+        docker push ${env.dn}:latest
+
