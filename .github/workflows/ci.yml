@@ -103,7 +103,9 @@ jobs:
       run: pyinstaller --onefile svrusoundbot.py
 
     - name: building a static executable file
-      if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      # if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      if: ${{ false }} # skeep 
+      # See https://github.com/JonathonReinhart/staticx/issues/188
       run: |
         set -eux
         python -m pip install staticx
