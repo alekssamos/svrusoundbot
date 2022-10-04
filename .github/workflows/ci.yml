@@ -105,8 +105,8 @@ jobs:
     - name: building a static executable file
       # if: ${{ startsWith(matrix.os, 'ubuntu') }}
       if: ${{ false }} # skeep 
-# See https://github.com/JonathonReinhart/staticx/issues/188
-run: |
+      # See https://github.com/JonathonReinhart/staticx/issues/188
+      run: |
         set -eux
         python -m pip install staticx
         staticx --strip dist/svrusoundbot dist/svrusoundbot-static
