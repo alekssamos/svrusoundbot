@@ -24,6 +24,16 @@ queue = []
 all_workers=[]
 me = None
 
+def human_readable_size(size, decimal_places=2):
+    """
+    https://stackoverflow.com/a/43690506/14077164
+    """
+    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
+        if size < 1024.0 or unit == 'PiB':
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
+
 class MyClient(Client):
     async def start(self):
         global me
@@ -219,6 +229,8 @@ async def worker():
             await asyncio.sleep(1)
 
 async def progress(current, total, progress_message):
-    await progress_message.edit(text=f"Отправка аудио файла,  {current * 100 / total:.1f}% Загружено.")
+    await progress_message.edit(text=f"""
+    Отправка аудио файла, {human_readable_size(current, 3)} / {human_readable_size(total, 3)} ({current * 100 / total:.1f}%) Загружено.
+    """.strip())
 
 app.run()
