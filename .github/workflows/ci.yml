@@ -2,12 +2,11 @@ name: ci
 
 on:
   push:
+    tags: ["v*"]
     branches: [ main ]
 
   pull_request:
     branches: [ main ]
-
-  release:
 
 env:
   dn: ghcr.io/${{ github.repository }}
