@@ -24,6 +24,16 @@ queue = []
 all_workers=[]
 me = None
 
+def human_readable_size(size, decimal_places=2):
+    """
+    https://stackoverflow.com/a/43690506/14077164
+    """
+    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
+        if size < 1024.0 or unit == 'PiB':
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
+
 class MyClient(Client):
     async def start(self):
         global me
@@ -109,7 +119,7 @@ async def ffmpeg_concat(files: list, filename: str) -> None:
     return await run_command("ffmpeg", "-i", f"concat:{pipe}", "-c", "copy", filename)
 
 
-async def a_main(message, docfilename, audiofilename):
+async def a_main(message, progress_message, docfilename, audiofilename):
     "Обрабатывает слова и возвращает список ошибок или пустой список"
     errors:list = []
     wordDoc = Document(docfilename)
@@ -122,11 +132,11 @@ async def a_main(message, docfilename, audiofilename):
     table = wordDoc.tables[0]
     all:int = len(list(table.rows))
     logger.info(f"Starting voiceover {all} rows and 2 cells")
-    status_msg = await message.reply(text="Начинаю озвучку...")
+    await progress_message.edit(text="Начинаю озвучку...")
     for row in table.rows:
         c+=1
         logger.debug(f"{c}/{all}...")
-        await status_msg.edit(f"Прогресс: {c}/{all}...")
+        await progress_message.edit(f"Прогресс: {c}/{all}...")
         svword, ruword = (row.cells[0].text, row.cells[1].text)
         if svword.strip() == "" or ruword.strip() == "":
             texts = " | ".join([cell.text for cell in row.cells])
@@ -140,13 +150,12 @@ async def a_main(message, docfilename, audiofilename):
             ru_mss.synthesize(ruword, files[-1])
         )
     logger.info("concat...")
-    await status_msg.edit("concat files...")
+    await progress_message.edit("concat files...")
     await ffmpeg_concat(files, audiofilename)
     logger.info("deleting...")
-    await status_msg.edit("delete files...")
+    await progress_message.edit("delete files...")
     for file in files:
         await aiofiles.os.remove(file)
-    await status_msg.delete()
     return errors
 
 @app.on_message( filters.command(["start","help"]))
@@ -164,16 +173,15 @@ async def new_document(_, message):
     logger.info("new document received")
     if not (message.document is not None and message.document.file_name.split(".")[-1].lower() in supported_extensions):
         return False
-    if len(queue) > 0:
-        await message.reply(f"Очередь №{len(queue)}")
-    queue.append(message)
+    progress_message = await message.reply(f"Очередь №{len(queue)}")
+    queue.append((message, progress_message))
     logger.debug("appended to queue")
 
 async def worker():
     logger.info("worker started")
     while True:
         try:
-            message = queue.pop()
+            message, progress_message = queue.pop()
             logger.debug("I received a new message")
         except IndexError:
             await asyncio.sleep(0.1)
@@ -182,10 +190,12 @@ async def worker():
         if not os.path.isdir("downloads"):
             os.mkdir("downloads")
         os.mkdir(folder)
+        await progress_message.edit("Скачиваю документ...")
         file_with_text = await app.download_media(message, os.path.join(folder, message.document.file_name))
         try:
             w = a_main(
                 message,
+                progress_message,
                 file_with_text,
                 file_with_text+".mp3"
             )
@@ -194,7 +204,7 @@ async def worker():
             if len(errors) > 0:
                 txt = "\n".join(errors)
                 await message.reply(f"Во время обработки произошли следующие ошибки: {len(errors)}\n{txt}")
-            progress_message = await message.reply("Загрузка...")
+            await progress_message.edit("Загрузка...")
             await message.reply_audio(
                 file_with_text+".mp3",
                 performer = "Mattias & Dmitry",
@@ -204,20 +214,23 @@ async def worker():
             )
             await progress_message.delete()
         except asyncio.TimeoutError as e:
-            await message.reply("Слишком долго. Операция отменена.")
+            await progress_message.edit("Слишком долго. Операция отменена.")
             logger.exception("timeout")
         except Exception:
             ei = sys.exc_info()
             logger.exception("error")
             try: await app.send_message(chat_id=LogChat, text=ei[1])
             except: pass
-            await message.reply(f"Нет, вообще ничего не получилось.\n{ei[0]} {ei[1]}")
+            await progress_message.edit(f"Нет, вообще ничего не получилось.\n{ei[0]} {ei[1]}")
         finally:
             del message
+            del progress_message
             shutil.rmtree(folder)
             await asyncio.sleep(1)
 
 async def progress(current, total, progress_message):
-    await progress_message.edit(text=f"Отправка аудио файла,  {current * 100 / total:.1f}% Загружено.")
+    await progress_message.edit(text=f"""
+    Отправка аудио файла, {human_readable_size(current, 3)} / {human_readable_size(total, 3)} ({current * 100 / total:.1f}%) Загружено.
+    """.strip())
 
 app.run()
