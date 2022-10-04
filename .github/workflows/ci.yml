@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [ main ]
 
+  release:
+
 env:
   dn: ghcr.io/${{ github.repository }}
 
