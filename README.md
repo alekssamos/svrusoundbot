@@ -8,7 +8,7 @@ Available here: [@svrusoundbot](https://t.me/svrusoundbot).
 
 ## How to deploy on your server?
 
-There are already compiled executable independent files for [Windows x86](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot.exe) and [Linux x64](https://github.com/alekssamos/svrusoundbot/releases/download/v1.0.2/svrusoundbot).
+There are already compiled executable independent files for [Windows x86](https://github.com/alekssamos/svrusoundbot/releases/download/v1.1/svrusoundbot.exe) and [Linux x64](https://github.com/alekssamos/svrusoundbot/releases/download/v1.1/svrusoundbot).
 
 If the file does not run on some Linux systems, do this before starting:
 ```bash
@@ -54,7 +54,7 @@ venv/bin/python -m pip install -r requirements.txt
 ```
 #### or from docker container:
 ```bash
-docker pull ghcr.io/alekssamos/svrusoundbot:v1.0.2
+docker pull ghcr.io/alekssamos/svrusoundbot:v1.1
 ```
 ### Configuration
 * Get bot token from https://t.me/BotFather
@@ -73,7 +73,7 @@ venv/bin/python svrusoundbot.py
 ```
 #### through docker
 ```bash
-docker run --env-file .env ghcr.io/alekssamos/svrusoundbot:v1.0.2
+docker run --env-file .env ghcr.io/alekssamos/svrusoundbot:v1.1
 ```
 
 Everything is ready!
