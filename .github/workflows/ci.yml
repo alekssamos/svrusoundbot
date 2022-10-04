@@ -112,5 +112,23 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: executable release file
+        name: exe_for_${{ matrix.os }}
         path: dist/svrusoundbot*
+
+  uploadrelease:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    needs: ["build", "compile"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: download releases files
+      uses: actions/download-artifact@v3
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: exe_for_*/svrusoundbot*
+        fail_on_unmatched_files: true
+        append_body: true
