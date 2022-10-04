@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Build the Docker image
-      if: ${{ startsWith(GITHUB_REF, 'refs/tags/v') }}
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       run: |
         tag_name="${GITHUB_REF#refs/tags/}"
         set -eux
@@ -64,6 +64,7 @@ jobs:
 
   compile:
 
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     needs: ["build"]
     strategy:
       max-parallel: 4
