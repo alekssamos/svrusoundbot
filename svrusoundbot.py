@@ -1,4 +1,4 @@
-"svrusoundbot v1.0"
+"svrusoundbot v1.2"
 
 from pyrogram import errors
 from pyrogram import Client, filters, idle, StopPropagation
