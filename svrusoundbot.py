@@ -173,7 +173,7 @@ async def new_document(_, message):
     logger.info("new document received")
     if not (message.document is not None and message.document.file_name.split(".")[-1].lower() in supported_extensions):
         return False
-    progress_message = await message.reply(f"Очередь №{len(queue)}")
+    progress_message = await message.reply(f"Очередь №{(len(queue) + 1)}")
     queue.append((message, progress_message))
     logger.debug("appended to queue")
 
