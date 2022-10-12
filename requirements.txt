@@ -18,4 +18,4 @@ multidict==6.0.2
 python-docx==0.8.11
 yarl==1.8.1
 loguru==0.5.3
-python-dotenv==0.20.0
+python-dotenv==0.21.0
