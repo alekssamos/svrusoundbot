@@ -1,7 +1,7 @@
 pyaes==1.6.1
 Pyrogram==2.0.59
 PySocks==1.7.1
-TgCrypto==1.2.4
+TgCrypto==1.2.5
 aiofiles==0.8.0
 aiohttp==3.8.3
 aiosignal==1.2.0
