@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from pyrogram.types import InputMediaAudio
 from pyrogram import enums
 
-from typing import List, Tuple
+from typing import Any, Union, List, Iterable, Tuple, Awaitable
 from loguru import logger
 from dotenv import load_dotenv
 import asyncio
@@ -21,7 +21,7 @@ from msspeech import MSSpeech
 LogChat = -366949499
 supported_extensions = ["docx"]
 queue = []
-all_workers=[]
+all_workers=set()
 me = None
 
 def human_readable_size(size, decimal_places=2):
@@ -34,18 +34,26 @@ def human_readable_size(size, decimal_places=2):
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
 
+async def add_worker(coro:Awaitable)->None:
+    task = asyncio.create_task(coro)
+    all_workers.add(task)
+    task.add_done_callback(lambda x: logger.debug(f"worker {x} has been removed"))
+    task.add_done_callback(all_workers.discard)
+    logger.debug("worker has been added")
+
+
 class MyClient(Client):
     async def start(self):
         global me
         logger.debug("running bot...")
         res = await super().start()
-        all_workers.append(asyncio.create_task(worker()))
+        await add_worker(worker())
         me = await self.get_me()
         print(">>> BOT STARTED with username: @" + me.username)
         logger.info(f"BOT STARTED with username: @{me.username}")
         try:
             await self.send_message(
-                chat_id=LogChat, text="Bot 1.0 started", disable_notification=True
+                chat_id=LogChat, text="Bot 1.3 started", disable_notification=True
             )
         except:
             pass
@@ -227,6 +235,8 @@ async def worker():
             del progress_message
             shutil.rmtree(folder)
             await asyncio.sleep(1)
+            await add_worker(worker())
+            break
 
 async def progress(current, total, progress_message):
     await progress_message.edit(text=f"""
